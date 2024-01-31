@@ -1,0 +1,317 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Food Billing</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 1em;
+            text-align: center;
+        }
+
+        section {
+            margin: 2em;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 1em;
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .quantity-btn {
+            background-color: #008CBA;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .quantity-btn:hover {
+            background-color: #0073a8;
+        }
+
+        .remove-btn {
+            background-color: #f44336;
+            color: white;
+            padding: 5px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .remove-btn:hover {
+            background-color: #d32f2f;
+        }
+
+        input {
+            width: 50px;
+            padding: 5px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Food Billing System</h1>
+    </header>
+
+    <section>
+        <h2>Menu</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Burger</td>
+                    <td>$5.99</td>
+                    <td>
+                        <button class="quantity-btn" onclick="updateQuantity('burgerQuantity', -1)">-</button>
+                        <input type="number" id="burgerQuantity" value="0" min="0" max="10" oninput="updateQuantityFromMenu('burgerQuantity',1)">
+                        <button class="quantity-btn" onclick="updateQuantity('burgerQuantity', 1)">+</button>
+                    </td>
+                    <td><button onclick="addToCart('Burger', 5.99, 'burgerQuantity')">Add to Cart</button></td>
+                </tr>
+                <tr>
+                    <td>Pizza</td>
+                    <td>$8.99</td>
+                    <td>
+                        <button class="quantity-btn" onclick="updateQuantity('pizzaQuantity', -1)">-</button>
+                        <input type="number" id="pizzaQuantity" value="0" min="0" max="10" oninput="updateQuantityFromMenu(this)">
+                        <button class="quantity-btn" onclick="updateQuantity('pizzaQuantity', 1)">+</button>
+                    </td>
+                    <td><button onclick="addToCart('Pizza', 8.99, 'pizzaQuantity')">Add to Cart</button></td>
+                </tr>
+                <tr>
+                    <td>Salad</td>
+                    <td>$4.99</td>
+                    <td>
+                        <button class="quantity-btn" onclick="updateQuantity('saladQuantity', -1)">-</button>
+                        <input type="number" id="saladQuantity" value="0" min="0" max="10" oninput="updateQuantityFromMenu(this)">
+                        <button class="quantity-btn" onclick="updateQuantity('saladQuantity', 1)">+</button>
+                    </td>
+                    <td><button onclick="addToCart('Salad', 4.99, 'saladQuantity')">Add to Cart</button></td>
+                </tr>
+                <tr>
+                    <td>Chicken Wings</td>
+                    <td>$10.99</td>
+                    <td>
+                        <button class="quantity-btn" onclick="updateQuantity('wingsQuantity', -1)">-</button>
+                        <input type="number" id="wingsQuantity" value="0" min="0" max="10" oninput="updateQuantityFromMenu(this)">
+                        <button class="quantity-btn" onclick="updateQuantity('wingsQuantity', 1)">+</button>
+                    </td>
+                    <td><button onclick="addToCart('Chicken Wings', 10.99, 'wingsQuantity')">Add to Cart</button></td>
+                </tr>
+            </tbody>
+        </table>
+
+            </tbody>
+        </table>
+
+        <h2>Cart</h2>
+        <table id="cart">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Price</th>
+                    <th>Quantity</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <p id="total">Total: $0.00</p>
+
+        <!-- Add "Remove" and "Reset" buttons -->
+        <button onclick="resetCart()">Reset Cart</button>
+
+    </section>
+
+    <script>
+        let total = 0;
+
+        function addToCart(item, price, quantityId) {
+            const cartTable = document.getElementById('cart').getElementsByTagName('tbody')[0];
+            const quantityInput = document.getElementById(quantityId);
+            const quantity = parseInt(quantityInput.value);
+
+            let found = false;
+
+            for (let i = 0; i < cartTable.rows.length; i++) {
+                if (cartTable.rows[i].cells[0].textContent === item) {
+                    found = true;
+                    const existingQuantityInput = cartTable.rows[i].cells[2].getElementsByTagName('input')[0];
+                    existingQuantityInput.value = parseInt(existingQuantityInput.value) + quantity;
+                    updateQuantity2(cartTable.rows[i], price);
+                    break;
+                }
+            }
+
+            if (!found && quantity != 0) {
+                const newRow = cartTable.insertRow();
+
+                const itemCell = newRow.insertCell(0);
+                itemCell.textContent = item;
+
+                const priceCell = newRow.insertCell(1);
+                priceCell.textContent = `${price.toFixed(2)}`;
+
+                const quantityCell = newRow.insertCell(2);
+                const newQuantityInput = document.createElement('input');
+                newQuantityInput.type = 'number';
+                newQuantityInput.value = quantity;
+                newQuantityInput.min = 0;
+                newQuantityInput.max = 10;
+                newQuantityInput.disabled = true;
+                quantityCell.appendChild(newQuantityInput);
+
+                const removeCell = newRow.insertCell(3);
+                removeCell.innerHTML = `<button onclick="removeFromCart(this)">Remove</button>`;
+
+                total += price * quantity;
+                updateTotal();
+            }
+        }
+
+        function removeFromCart(btn) {
+            const cartTable = document.getElementById('cart').getElementsByTagName('tbody')[0];
+            // const selectedRows = Array.from(cartTable.getElementsByTagName('input')).filter(input => input.checked);
+            const Table = btn.parentNode.parentNode;
+            const price = parseFloat(btn.parentNode.previousSibling.textContent.slice(1));
+            const quantity = btn.parentNode.previousSibling.querySelector("input").value;
+            console.log(price);
+            // Table.parentNode.removeChild(btn.parentNode.parentNode);
+            
+            // selectedRows.forEach(row => {
+            //     const price = parseFloat(row.parentNode.previousSibling.textContent.slice(1));
+            //     const quantity = parseInt(row.value);
+            //     total -= price * quantity;
+            //     row.parentNode.parentNode.remove();
+            // });
+
+            updateTotal();
+        }
+
+        function resetCart() {
+            const cartTable = document.getElementById('cart').getElementsByTagName('tbody')[0];
+            cartTable.innerHTML = '';
+            total = 0;
+            updateTotal();
+        }
+
+        function updateQuantity2(row, price) {
+            const quantityInput = row.getElementsByTagName('input')[0];
+            const quantity = parseInt(quantityInput.value) + price;
+            quantityInput.value = quantity;
+
+
+            const priceCell = row.cells[1];
+            const newPrice = quantity * parseFloat(price);
+            // priceCell.textContent = $${newPrice.toFixed(2)};
+
+            total = 0;
+            const cartTable = document.getElementById('cart').getElementsByTagName('tbody')[0];
+            for (let i = 0; i < cartTable.rows.length; i++) {
+                const rowPrice = parseFloat(cartTable.rows[i].cells[1].textContent.slice(1));
+                const rowQuantity = parseInt(cartTable.rows[i].cells[2].getElementsByTagName('input')[0].value);
+                total += rowPrice;
+            }
+            updateTotal();
+        }
+
+        function updateQuantity(btn, price) {
+            const row = document.getElementById(btn).parentNode.parentNode;
+            const quantityInput = row.getElementsByTagName('input')[0];
+            const quantity = parseInt(quantityInput.value) + price;
+            quantityInput.value = quantity;
+
+
+            const priceCell = row.cells[1];
+            const newPrice = quantity * parseFloat(price);
+            // priceCell.textContent = `${newPrice.toFixed(2)}`;
+
+            total = 0;
+            const cartTable = document.getElementById('cart').getElementsByTagName('tbody')[0];
+            for (let i = 0; i < cartTable.rows.length; i++) {
+                const rowPrice = parseFloat(cartTable.rows[i].cells[1].textContent.slice(1));
+                const rowQuantity = parseInt(cartTable.rows[i].cells[2].getElementsByTagName('input')[0].value);
+                total += rowPrice;
+            }
+            // updateTotal();
+        }
+
+        function updateTotal() {
+            const totalElement = document.getElementById('total');
+            totalElement.textContent = `Total: $${total.toFixed(2)}`;
+        }
+
+        function updateQuantityFromMenu(quantityId, change) {
+            const quantityInput = document.getElementById(quantityId);
+            const currentQuantity = parseInt(quantityInput.value);
+            const newQuantity = currentQuantity + change;
+
+            if (newQuantity >= 1 && newQuantity <= 10) {
+                quantityInput.value = newQuantity;
+                updateQuantityFromCart(quantityInput.closest('tr'), change);
+            }
+        }
+
+        function updateQuantityFromCart(row, change) {
+            const quantityInput = row.cells[2].getElementsByTagName('input')[0];
+            const currentQuantity = parseInt(quantityInput.value);
+            const newQuantity = currentQuantity + change;
+
+            if (newQuantity >= 1 && newQuantity <= 10) {
+                quantityInput.value = newQuantity;
+                updateQuantity(row, parseFloat(row.cells[1].textContent.slice(1)));
+            }
+        }
+    </script>
+</body>
+
+</html>
