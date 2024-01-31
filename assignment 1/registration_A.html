@@ -1,0 +1,88 @@
+<html>
+
+<head>
+    <style>
+        th,
+        td {
+            text-align: left;
+        }
+    </style>
+</head>
+<form style="color: antiquewhite;">
+    <table align='center' cellpadding='5' bgcolor="lightpink">
+        <tbody>
+            <tr>
+                <th>Name:</th>
+                <td><input type='text' name='name' required></td>
+            </tr>
+            <tr>
+                <th>Email:</th>
+                <td><input type='email' name='mail' required></td>
+            </tr>
+            <tr>
+                <th>Gender:</th>
+                <td><input type='radio' name='gender' required>Male
+                    <input type='radio' name='gender' required>Female
+                </td>
+            </tr>
+            <tr>
+                <th>Language:</th>
+                <td><input type='checkbox' name='lang' required> English<input type='checkbox' name='lang'
+                        required>Hindi<input type='checkbox' name='lang' required>Telugu</td>
+            </tr>
+            <tr>
+                <th>Religion:</th>
+                <td>
+                    <select name='religion'>
+                        <option>Hindus</option>
+                        <option>Muslims</option>
+                        <option>Christians</option>
+                        <option>Islam</option>
+                        <option>Buddhisam</option>
+                        <option>other</option>
+                    </select>
+                </td>
+            </tr>
+            <tr>
+                <th>Date-Of-Birth</th>
+                <td><input type='date' name='dob' required></td>
+            </tr>
+            <tr>
+                <th>Phone No</th>
+                <td><input type='tel' name='phone number' pattern="^((\+91[0-9]{10})|(0[0-9]{10}))$" required> </td>
+            </tr>
+            <tr>
+                <th>Address</th>
+                <td><textarea rows='6' cols='23'></textarea></td>
+            </tr>
+            <tr>
+                <th>B.Tech%</th>
+                <td><input type='text' name='btech'>%
+                <td>
+            </tr>
+            <tr>
+                <th>Inter%</th>
+                <td><input type='text' name='inter'>%
+                <td>
+            </tr>
+            <tr>
+                <th>SSC%</th>
+                <td><input type='text' name='ssc'>%
+                <td>
+            </tr>
+            <tr>
+                <th>RESUME:</th>
+                <td><input type="file" name="resume" placeholder="search file"></td>
+            </tr>
+        </tbody>
+        <tfooter>
+            <tr>
+                <td></td>
+                <td><input type='submit'>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<input type='reset'></td>
+            </tr>
+
+        </tfooter>
+    </table>
+</form>
+
+</html>
